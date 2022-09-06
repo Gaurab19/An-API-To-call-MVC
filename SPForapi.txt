@@ -1,0 +1,168 @@
+Table Name=Person Model
+
+Table element:
+Id(int-Pk)
+FullName(varchar-50),
+Gender(varchar-50),
+Province,
+DateofBirth(DateTime),
+Email(varchar-50),
+Password(varchar-50),
+Title(nvarchar-MAX),
+Image(Varbinary-Max)
+------------------------
+Stored Procedure for Create data
+USE [APIDB]
+GO
+/****** Object:  StoredProcedure [dbo].[CreateData]    Script Date: 6/16/2022 5:42:53 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER Procedure [dbo].[CreateData]  
+( 
+@FullName varchar(50),  
+@Gender Varchar(50),  
+@Province varchar(50),
+@DateOfBirth datetime,
+@Email varchar(50),
+@Password varchar(50),
+@Title nvarchar(MAX),
+@Image varbinary(MAX)
+)  
+as  
+begin  
+  
+INSERT INTO [dbo].[PersonModel]  
+           ([FullName]  
+           ,[Gender]  
+           ,[Province]
+		   ,[DateOfBirth]
+		   ,[Email]
+		   ,[Password]
+		   ,[Title]
+		   ,[Image])  
+     VALUES  
+           (
+		   @FullName,  
+           @Gender,  
+           @Province,
+		   @DateOfBirth,
+		   @Email,
+		   @Password,
+		   @Title,
+		   @Image
+          )  
+End 
+------------------------------------------------------------------------
+Stored Procedure for delete data
+USE [APIDB]
+GO
+/****** Object:  StoredProcedure [dbo].[DeletePersonData]    Script Date: 6/16/2022 5:43:36 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[DeletePersonData] (@id INT)
+-- procedure deletes the row for the given id
+AS BEGIN
+  DELETE
+  FROM PersonModel
+  WHERE id = @id;
+END;
+---------------------------------------------------------------------------
+Stored Procedure for Getallperson data
+USE [APIDB]
+GO
+/****** Object:  StoredProcedure [dbo].[GetAllPersonData]    Script Date: 6/16/2022 5:44:55 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER PROCEDURE [dbo].[GetAllPersonData] 
+@SearchText   NVARCHAR(100)=null
+
+AS BEGIN
+  --SELECT *  FROM PersonModel;
+  SET NOCOUNT ON
+    DECLARE
+	 @sqlStatement  nvarchar(MAX);
+
+	 SET @sqlStatement= 'SELECT * From PersonModel'
+	  
+	 If @SearchText!='' or @SearchText!=null 
+	 begin
+		  set @sqlStatement= @sqlStatement+ ' where FullName like ''%'+  @SearchText+'%''' +
+		   ' or Gender like ''%'+  @SearchText+'%''' + ' or Province like ''%'+  @SearchText+'%'''
+		  
+	end
+
+	exec (@sqlStatement)
+	print (@sqlStatement)
+END;
+
+-- exec [GetAllPersonData]  'female'
+----------------------------------------------------------------------------------------------
+Stored Procedure for GetPersonById
+USE [APIDB]
+GO
+/****** Object:  StoredProcedure [dbo].[GetPersonById]    Script Date: 6/16/2022 5:45:40 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER PROCEDURE [dbo].[GetPersonById]  (@id INT)
+-- procedure returns the entire row for the given id
+AS BEGIN
+  SELECT *
+  FROM PersonModel
+  WHERE id = @id;
+END;
+--------------------------------------------------------------------------------------
+Stored procedure for Update Person Data
+USE [APIDB]
+GO
+/****** Object:  StoredProcedure [dbo].[UpdatePersonData]    Script Date: 6/16/2022 5:46:34 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER PROCEDURE [dbo].[UpdatePersonData] 
+	   @Id			int							,
+       @FullName                   VARCHAR(50)   , 
+       @Gender                      VARCHAR(50)  ,
+	   @Province                      VARCHAR(50) ,
+	   @DateOfBirth                      datetime,
+	   @Email                      VARCHAR(50),
+	   @Password                     VARCHAR(50),
+	   @Title						nvarchar(MAX),
+		@Image						varbinary(MAX)
+
+
+
+      
+AS 
+BEGIN 
+     SET NOCOUNT ON ;
+           
+		   UPDATE PersonModel
+            SET    
+			       
+				   FullName = @FullName,
+                   Gender = @Gender,
+                   Province = @Province ,
+                   DateOfBirth = @DateOfBirth,
+			       Email = @Email,
+			      Password = @Password,
+				  Title = @Title,
+				  Image = @Image
+
+            WHERE  Id = @Id
+END
+-------------------------------------------------------------------------------------------
+
+

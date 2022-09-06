@@ -1,0 +1,165 @@
+﻿
+
+
+@model Person.Models.PersonModel
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+<div class="container">
+    <h2>Users Record</h2>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" onclick="clearTextBox();">Add New User</button><br /><br />
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>
+                    Full Name
+                </th>
+                <th>
+                    Gender
+                </th>
+                <th>
+                    Province
+                </th>
+                <th>
+                    DOB
+                </th>
+                <th>
+                    Email
+                </th>
+                <th>
+                    Password
+                </th>
+            </tr>
+        </thead>
+        <tbody class="tbody"></tbody>
+    </table>
+
+</div>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4 class="modal-title" id="myModalLabel">Add Person</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="FullName">Full Name</label>
+                        <input type="text" class="form-control" id="FullName" placeholder="FullName" />
+                    </div>
+                    <div class="form-group">
+                        <label for="gender"> Gender</label><br />
+                        <input type="radio" id="Gender" name="Gender" value="male"> Male
+                        <input type="radio" id="Gender" name="Gender" value="female"> Female
+                        <input type="radio" id="Gender" name="Gender" value="other"> Other
+
+                    </div>
+                    <div class="form-group">
+                        <label for="Province">Province</label>
+                        <select id="Province" name="Province">
+                            <option value="Biratnagar">Biratnagar</option>
+                            <option value="Janakpur">Janakpur</option>
+                            <option value="Sudurpaschim">Sudurpaschim</option>
+                            <option value="Karnali">Karnali</option>
+                            <option value="Bagmati">Bagmati</option>
+                            <option value="Gandaki">Gandaki</option>
+                            <option value="Lumbini">Lumbini</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="DateOfBirth">DateOfBirth</label>
+                        <div id="wrapper">
+                            @*<input class="form-control datepicker" id="DOB" name="date" type="date"
+                                readonly placeholder="DD/MM/YYYY" data-date-inline-picker="true" />*@
+                            <input class="datepicker" id="DateOfBirth" type="date" />
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="Email">Email</label>
+                        <input type="text" class="form-control" id="Email" placeholder="Email" />
+                    </div>
+                    <div class="form-group">
+                        <label for="Password">Password</label>
+                        <input type="Password" class="form-control" id="Password" placeholder="Password" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnAdd">Add</button>
+                <button type="button" class="btn btn-primary" id="btnUpdate" style="display:none;" onclick="Update();">Update</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    @*<script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>*@
+
+    <script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".datepicker").datepicker({
+                dateFormat: "dd-mm-yy",
+                changemonth: true,
+                changeyear: true
+            });
+        });
+        $("#btnAdd").click(function () {
+            //alert("success")
+            var person = new Object();
+            person.FullName = $('#FullName').val();
+            person.Gender = $('#Gender').val();
+            person.Province = $('#Province').val();
+            person.DateOfBirth = $('#DateOfBirth').val();
+            person.email = $('#Email').val();
+            person.Password = $('#Password').val();
+
+
+            console.log('personDt', person);
+
+            //var data = { FullName: fullName, Gender: gender, Provience: provience, DOB: DOB, Email: email, Password: password };
+            //var formData = JSON.stringify({ "person": data });
+
+            if (person != null) {
+                $.ajax({
+                    type: "POST",
+                    url: "/Ajax/Create",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    data: JSON.stringify(person),
+                    success: function (response) {
+                        console.log(response)
+                        if (response != null) {
+                            alert("Full Name : " + response.FullName +
+                                ", Gender : " + response.Gender +
+                                ", Province :" + response.Province +
+                                ", DateOfBirth :" + response.DateOfBirth +
+                                ", Email :" + response.Email +
+                                ", Password :" + response.Password);
+                        } else {
+                            alert("Something went wrong");
+                        }
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+            }
+        });
+    </script>
+}
+
+
+
+
+
+
